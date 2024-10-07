@@ -1,0 +1,55 @@
+# Byte-compiled files
+__pycache__/
+*.py[cod]
+
+# Environment variables
+.env
+
+# Virtual environment
+venv/
+env/
+ENV/
+.venv/
+.venv/
+
+# IDEs and editors
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.vscode/
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+lib/
+lib64/
+parts/
+var/
+sdist/
+.wheelhouse/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Jupyter Notebook files
+.ipynb_checkpoints
+
+# Python test files
+.pytest_cache/
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.coverage
+*.hypothesis/
+.tox/
+.unittest/
+
+# Other files
+*.DS_Store
+*.swp
+token.txt
