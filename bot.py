@@ -174,13 +174,24 @@ def get_all_task(token):
     else:
         print(api.text)
 
+def daily(token):
+    daily=send_api(
+        url='https://api.cyberfin.xyz/api/v1/mining/claim/daily',
+        data={},
+        token=token,
+        method='post'
+    )
+    
+    if daily.status_code == 201 :
+        d = daily.json()
+        print(f"{Fore.WHITE} { get_current_time()}  {Fore.GREEN} DAILY |  KE-{d['message']} {Style.RESET_ALL}")
 
 
 def USER(index,token,user_tele_id):
     config = load_config()
     print('===========================================================================')
     print(f"{Fore.WHITE} { get_current_time()}  Account Ke-{index+1} {Style.RESET_ALL}")
-    
+    daily(token)
     ## GET INFO 
     boost=send_api(
         url='https://api.cyberfin.xyz/api/v1/mining/boost/info',
@@ -221,6 +232,7 @@ def USER(index,token,user_tele_id):
     eggLevel=res_js['message']['eggLevel']
 
     while (int(res_js['message']['eggPrice']) < int(config.get("eggPrice")) and (int(res_js['message']['eggPrice']) <= int(res_metadata['message']['userData']['balance']))):
+        res=buy_egg(token)
         if res.status_code == 200 :
             res = res.json()
             # Increment eggLevel
