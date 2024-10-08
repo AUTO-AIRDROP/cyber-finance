@@ -1,7 +1,8 @@
 # Byte-compiled files
 __pycache__/
 *.py[cod]
-
+.txt
+.json
 # Environment variables
 .env
 
