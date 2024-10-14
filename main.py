@@ -130,87 +130,86 @@ def countdown(total_seconds):
 
 def main():
     config = load_config()
-    try:
-        while True:
-            dataAuth = Token.get_auth_json()  
-            for i,data in enumerate(dataAuth):
+   
+    while True:
+        dataAuth = Token.get_auth_json()  
+        for i,data in enumerate(dataAuth):
+            
+            ### PRINT USER
+            output.warning('#--------------------------#')
+            output.success(f"AF09>> USER KE-{i+1}  {data['first_name']}")
+            
+            ### GET INFO 
+            boost=api.get(
+                url='https://api.cyberfin.xyz/api/v1/mining/boost/info',
+                data={},
+                token=data['token']
+            )
+            res_boost=boost.json()
+            
+            ### META DATA
+            metadata=api.get(
+                url='https://api.cyberfin.xyz/api/v1/game/mining/gamedata',
+                data={},
+                token=data['token']
+            )
+            res_metadata=metadata.json()
+            s_balance=res_metadata["message"]["userData"]["balance"]
+            output.warning(f'Balance : {s_balance}')
+            
+            ### DAILY
+            daily(data)
+            claim(data)
+            ### BUY HAMMER
+            
+            hammerLevel=res_boost['message']['hammerLevel']
+            while (
+                    (int(res_boost['message']['hammerPrice']) < int(config.get("hammerPrice"))) 
+                    and
+                    (int(res_boost['message']['hammerPrice']) < int(res_metadata['message']['userData']['balance']))
+                ):
                 
-                ### PRINT USER
-                output.warning('#--------------------------#')
-                output.success(f"AF09>> USER KE-{i+1}  {data['first_name']}")
-                
-                ### GET INFO 
-                boost=api.get(
-                    url='https://api.cyberfin.xyz/api/v1/mining/boost/info',
-                    data={},
-                    token=data['token']
-                )
-                res_boost=boost.json()
-               
-                ### META DATA
-                metadata=api.get(
-                    url='https://api.cyberfin.xyz/api/v1/game/mining/gamedata',
-                    data={},
-                    token=data['token']
-                )
-                res_metadata=metadata.json()
-                s_balance=res_metadata["message"]["userData"]["balance"]
-                output.warning(f'Balance : {s_balance}')
-                
-                ### DAILY
-                daily(data)
-                claim(data)
-                ### BUY HAMMER
-                
-                hammerLevel=res_boost['message']['hammerLevel']
-                while (
-                        (int(res_boost['message']['hammerPrice']) < int(config.get("hammerPrice"))) 
-                        and
-                        (int(res_boost['message']['hammerPrice']) < int(res_metadata['message']['userData']['balance']))
-                    ):
-                    
-                    res=buy_hammer(data)
-                    if res.status_code == 200 :
-                        res = res.json()
-                        hammerLevel+=1
-                        output.success(f'UPGRADE HAMMER TO LEVEL {hammerLevel}')
-                        time.sleep(31)
-                        res_boost['message']['hammerLevel']=hammerLevel
-                        res_metadata['message']['userData']['balance']=int(res['message']['userData']['balance'])
-                    else:
-                        break
-                output.warning(f'HAMMER LEVEL {res_boost["message"]["hammerLevel"]}')
-                
-                ### BUY EGG
-                eggLevel=res_boost['message']['eggLevel']
+                res=buy_hammer(data)
+                if res.status_code == 200 :
+                    res = res.json()
+                    hammerLevel+=1
+                    output.success(f'UPGRADE HAMMER TO LEVEL {hammerLevel}')
+                    time.sleep(31)
+                    res_boost['message']['hammerLevel']=hammerLevel
+                    res_metadata['message']['userData']['balance']=int(res['message']['userData']['balance'])
+                else:
+                    break
+            output.warning(f'HAMMER LEVEL {res_boost["message"]["hammerLevel"]}')
+            
+            ### BUY EGG
+            eggLevel=res_boost['message']['eggLevel']
 
-                while (int(res_boost['message']['eggPrice']) < int(config.get("eggPrice")) 
-                       and 
-                       (int(res_boost['message']['eggPrice']) <= int(res_metadata['message']['userData']['balance']))
-                    ):
-                    res=buy_egg(data)
-                    if res.status_code == 200 :
-                        res = res.json()
-                        eggLevel += 1
-                        output.success(f'UPGRADE EGG TO LEVEL {eggLevel}')
-                        time.sleep(5)
-                        res_boost['message']['eggLevel']=eggLevel
-                        res_metadata['message']['userData']['balance'] = int(res['message']['userData']['balance'])
-                    else:
-                        break
+            while (int(res_boost['message']['eggPrice']) < int(config.get("eggPrice")) 
+                    and 
+                    (int(res_boost['message']['eggPrice']) <= int(res_metadata['message']['userData']['balance']))
+                ):
+                res=buy_egg(data)
+                if res.status_code == 200 :
+                    res = res.json()
+                    eggLevel += 1
+                    output.success(f'UPGRADE EGG TO LEVEL {eggLevel}')
+                    time.sleep(5)
+                    res_boost['message']['eggLevel']=eggLevel
+                    res_metadata['message']['userData']['balance'] = int(res['message']['userData']['balance'])
+                else:
+                    break
 
-                output.warning(f'EGG LEVEL {res_boost["message"]["eggLevel"]}')
-                
-                #### TASK VIDEO
-                task_ads(data)
-                
-                #### ALL TASK
-                get_all_task(data) 
-                output.success(f'New Balance : {res_metadata["message"]["userData"]["balance"]} ')
-                countdown(config.get("countdown", 1000))
-                output.danger('#--------------------------#')
-    except KeyboardInterrupt:
-        main()
+            output.warning(f'EGG LEVEL {res_boost["message"]["eggLevel"]}')
+            
+            #### TASK VIDEO
+            task_ads(data)
+            
+            #### ALL TASK
+            get_all_task(data) 
+            output.success(f'New Balance : {res_metadata["message"]["userData"]["balance"]} ')
+            countdown(config.get("countdown", 1000))
+            output.danger('#--------------------------#')
+  
 
 
 if __name__ == "__main__":
