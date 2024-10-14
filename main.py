@@ -215,8 +215,11 @@ def main():
 
 if __name__ == "__main__":
     while True:
-            try:
-                main()
-            except Exception as e:
-                print(f"Error tidak tertangani: {e}")
-                continue 
+        try:
+            main()
+        except KeyboardInterrupt:
+            print("Program dihentikan oleh pengguna (Ctrl+C)")
+            break
+        except Exception as e:
+            print(f"Error tidak tertangani: {e}")
+            continue
