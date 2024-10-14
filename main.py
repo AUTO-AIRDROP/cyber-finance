@@ -38,7 +38,6 @@ def claim(d):
         d = daily.json()
         output.success(f"Claim Mining | MiningRate {d['miningData']['miningRate']}")
 
- 
 def buy_hammer(d):
     buy=api.post(
         url='https://api.cyberfin.xyz/api/v1/mining/boost/apply',
@@ -210,10 +209,14 @@ def main():
                 output.success(f'New Balance : {res_metadata["message"]["userData"]["balance"]} ')
                 countdown(config.get("countdown", 1000))
                 output.danger('#--------------------------#')
-
     except KeyboardInterrupt:
-        print("\nBot By AF09")
+        main()
 
 
 if __name__ == "__main__":
-    main()
+    while True:
+            try:
+                main()
+            except Exception as e:
+                print(f"Error tidak tertangani: {e}")
+                continue 
