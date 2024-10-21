@@ -129,6 +129,7 @@ def countdown(total_seconds):
     print("\nCountdown selesai!")
 
 def main():
+    Token.aut_token_json()
     config = load_config()
    
     while True:
